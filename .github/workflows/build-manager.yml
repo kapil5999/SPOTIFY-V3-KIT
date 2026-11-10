@@ -1,5 +1,10 @@
 name: Build Manager
 
+permissions:
+  actions: write
+  contents: write
+  packages: read
+
 on:
   push:
     branches: [ "main", "dev", "ci", "master" ]
@@ -44,8 +49,9 @@ jobs:
   generate-key:
     runs-on: ubuntu-latest
     outputs:
-      expected_size: ${{ steps.extract.outputs.expected_size }}
-      expected_hash: ${{ steps.extract.outputs.expected_hash }}
+      package_name: com.spotify.music
+      expected_size: '0x36f'
+      expected_hash: '5e7d12523c8cb7f76250cdf53917a8737c0b7a19b614107bc16614dd50de838b'
       keystore: ${{ steps.gen.outputs.keystore }}
       keystore_password: ${{ steps.gen.outputs.keystore_password }}
       key_password: ${{ steps.gen.outputs.key_password }}
@@ -100,16 +106,18 @@ jobs:
     needs: generate-key
     uses: ./.github/workflows/build-lkm.yml
     with:
-      expected_size: ${{ needs.generate-key.outputs.expected_size || '' }}
-      expected_hash: ${{ needs.generate-key.outputs.expected_hash || '' }}
+      package_name: com.spotify.music
+      expected_size: '0x36f'
+      expected_hash: '5e7d12523c8cb7f76250cdf53917a8737c0b7a19b614107bc16614dd50de838b'
     secrets: inherit
 
   build-xx-lkm:
     needs: generate-key
     uses: ./.github/workflows/build-xx-lkm.yml
     with:
-      expected_size: ${{ needs.generate-key.outputs.expected_size || '' }}
-      expected_hash: ${{ needs.generate-key.outputs.expected_hash || '' }}
+      package_name: com.spotify.music
+      expected_size: '0x36f'
+      expected_hash: '5e7d12523c8cb7f76250cdf53917a8737c0b7a19b614107bc16614dd50de838b'
     secrets: inherit
 
   build-ksuinit:
